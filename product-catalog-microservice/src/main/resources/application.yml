@@ -1,0 +1,21 @@
+# Discovery Server Access
+eureka:
+  instance:
+    hostname: product-catalog-microservice
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-microservice:8001/eureka/
+    registryFetchIntervalSeconds: 1
+
+# HTTP (Tomcat) server port
+server:
+  port: 9001
+
+#Connect to MongoServer
+#spring:
+#  data:
+#    mongodb:
+#      host: 127.0.0.1
+#      port: 27017
+#      database: products
+#      collections: products
