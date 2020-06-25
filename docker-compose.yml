@@ -54,3 +54,16 @@ services:
      - mongodb
     links:
      - mongodb
+  
+  product-services:
+    build: ./product-services
+    ports:
+     - "9007:9007"
+     - "4447:4447"
+    depends_on:
+     - discovery-microservice
+     - configuration-microservice
+     - gateway-microservice
+     - mongodb
+    links:
+     - mongodb
