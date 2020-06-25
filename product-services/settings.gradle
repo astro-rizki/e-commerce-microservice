@@ -1,0 +1,6 @@
+rootProject.name = 'product-services'
+//include 'discovery-microservice'
+//include 'configuration-microservice'
+//include 'gateway-microservice'
+//include 'product-catalog-microservice'
+//include 'cart-microservice'
