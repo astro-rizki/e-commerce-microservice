@@ -18,7 +18,7 @@ Aku bikin product service baru ya, tapi ga ngereplace fitur product yang lama. J
 1. gradlew build di folder utama (kaya kemarin)
 2. pindah ke folder product-service (yg baru), trus gradlew build di situ
 3. berestu docker-compose kayak biasa, (build, trus up)
-4. aksesnya di port 9997 yak
+4. aksesnya di port 9007 yak
 
 cara CRUD nya gimana, coba diliat di source nya ya, terus kalo butuh id buat dijadiin param, coba pas udh di docker run (docker compose up), buka container mongodb nya, terus buka cli, masukin ini (buat cek isi mongonya)
 
