@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
 
   discovery-microservice:
@@ -67,3 +67,31 @@ services:
      - mongodb
     links:
      - mongodb
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  product-search-service:
+    build: ./product-search-service
+    ports:
+      - 9008:9008
+      - 4448:4448
+    depends_on:
+      - discovery-microservice
+      - configuration-microservice
+      - gateway-microservice
+      - elasticsearch

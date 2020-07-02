@@ -1,0 +1,13 @@
+# Discovery Server Access
+eureka:
+  instance:
+    hostname: product-search-service
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-microservice:8001/eureka/
+    registryFetchIntervalSeconds: 1
+
+# HTTP (Tomcat) server port
+server:
+  port: 9008
+  

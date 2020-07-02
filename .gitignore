@@ -4,3 +4,7 @@ out/
 build/
 *.iml
 classes/
+.project
+.classpath
+bin/
+.settings/
