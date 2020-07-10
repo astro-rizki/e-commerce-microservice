@@ -7,9 +7,9 @@ import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsea
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+// import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@EnableDiscoveryClient
+// @EnableDiscoveryClient
 @SpringBootApplication
 @EnableReactiveElasticsearchRepositories
 public class ProductSearchServiceApplication extends AbstractReactiveElasticsearchConfiguration {

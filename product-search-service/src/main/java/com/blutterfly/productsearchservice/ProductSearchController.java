@@ -1,10 +1,8 @@
 package com.blutterfly.productsearchservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,29 +45,11 @@ public class ProductSearchController {
         return this.productRepository.findById(id);
     }
 
-    // tambah, need product, id kosongkan!
-    @PostMapping("/products")
-    public @ResponseBody
-    Mono<Void> insertProduct(@RequestBody Product product){
-        log.info("This new product is pretty good.");
-        return this.productRepository.save(product).then();
-    }
-
-    // hapus, by id
-    @DeleteMapping("/products")
-    public @ResponseBody
-    Mono<Void> deleteProduct(@RequestParam String id){
-        log.info("Why did you delete this precious thing?");
-        return this.productRepository.deleteById(id);
-    }
-
-    //update product, by id, product body kosongkan id!
-    @PutMapping("/products")
-    public @ResponseBody
-    Mono<Void> updateProduct(@RequestParam String id, @RequestBody Product product){
-        log.info("Changed your mind?");
-        product.setId(id);
-        return this.productRepository.save(product).then();
-    }
+    // @PostMapping("/products")
+    // public @ResponseBody
+    // void insertProduct(@RequestBody Product product) {
+    //     log.info("This new product is pretty good.");
+    //     this.productRepository.save(product).then().block();
+    // }
 
 }

@@ -1,11 +1,11 @@
 # Discovery Server Access
-eureka:
-  instance:
-    hostname: product-services
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-microservice:8001/eureka/
-    registryFetchIntervalSeconds: 1
+# eureka:
+#   instance:
+#     hostname: product-services
+#   client:
+#     serviceUrl:
+#       defaultZone: http://discovery-microservice:8001/eureka/
+#     registryFetchIntervalSeconds: 1
 
 # HTTP (Tomcat) server port
 server:
@@ -19,3 +19,29 @@ spring:
       port: 27017
       database: products
       collections: products
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          autoCreateTopics: true
+          # Change this configuration with your Apache Kafka location
+          brokers:
+            - ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
+      bindings:
+        # Write consumer/subscriber configuration on input section
+        input:
+          binder: kafka
+          # Change this configuration to meet your Kafka topic name
+          destination: ${TOPIC_NAME:test}
+          # content-type supported for POJO is application/json
+          content-type: application/json
+          group: input-group-1
+        # Write producer/publisher configuration on output section
+        output:
+          binder: kafka
+          # Change this configuration to meet your Kafka topic name
+          destination: ${TOPIC_NAME:test}
+          group: output-group-1
+          # content-type supported for POJO is application/json
+          content-type: application/json

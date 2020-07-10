@@ -1,27 +1,25 @@
 package io.jtkpolban.ecommerce.productservices;
 
 import org.bson.types.ObjectId;
-import org.omg.CORBA.Object;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
+import org.springframework.messaging.support.MessageBuilder;
 
 @RestController
 public class ProductCatalogController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProductCatalogController.class);
-
     @Autowired
-    private final ProductRepository productRepository;
+    ProductRepository productRepository;
+    
+    private Producer producer;
 
-    public ProductCatalogController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductCatalogController(Producer producer){
+        super();
+        this.producer = producer;
     }
 
     @RequestMapping("/")
@@ -49,6 +47,11 @@ public class ProductCatalogController {
     @PostMapping("/products/")
     public @ResponseBody
     Mono<Void> insertProduct(@RequestBody Product product){
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(new ProductConsumed(product))
+                    .setHeader("type","POST")
+                    .build());
         return this.productRepository.save(product).then();
     }
 
@@ -57,6 +60,11 @@ public class ProductCatalogController {
     public @ResponseBody
     Mono<Void> deleteProduct(@RequestParam String id){
         ObjectId oid = new ObjectId(id);
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(id)
+                    .setHeader("type","DELETE")
+                    .build());
         return this.productRepository.deleteById(oid);
     }
 
@@ -65,6 +73,11 @@ public class ProductCatalogController {
     public @ResponseBody
     Mono<Void> updateProduct(@RequestParam String id, @RequestBody Product product){
         product.set_id(new ObjectId(id));
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(new ProductConsumed(product))
+                    .setHeader("type","PUT")
+                    .build());
         return this.productRepository.save(product).then();
     }
 

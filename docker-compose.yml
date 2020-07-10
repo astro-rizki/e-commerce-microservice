@@ -1,72 +1,93 @@
 version: "3.8"
 services:
 
-  discovery-microservice:
-    build: ./discovery-microservice
-    ports:
-     - "8001:8001"
+  # discovery-microservice:
+  #   build: ./discovery-microservice
+  #   ports:
+  #    - "8001:8001"
 
-  configuration-microservice:
-    build: ./configuration-microservice
-    ports:
-     - "8002:8002"
-    depends_on:
-     - discovery-microservice
+  # configuration-microservice:
+  #   build: ./configuration-microservice
+  #   ports:
+  #    - "8002:8002"
+  #   depends_on:
+  #    - discovery-microservice
 
-  redis:
-    build: ./redis
-    ports:
-      - "6379:6379"
+  # redis:
+  #   build: ./redis
+  #   ports:
+  #     - "6379:6379"
+
+  # gateway-microservice:
+  #   build: ./gateway-microservice
+  #   ports:
+  #    - "8000:8000"
+  #   depends_on:
+  #    - discovery-microservice
+  #    - configuration-microservice
+
+  # cart-microservice:
+  #   build: ./cart-microservice
+  #   ports:
+  #    - "9002:9002"
+  #   depends_on:
+  #    - discovery-microservice
+  #    - configuration-microservice
+  #    - gateway-microservice
+  #    - redis
+
+  # product-catalog-microservice:
+  #   build: ./product-catalog-microservice
+  #   ports:
+  #    - "9001:9001"
+  #    - "4444:4444"
+  #   depends_on:
+  #    - discovery-microservice
+  #    - configuration-microservice
+  #    - gateway-microservice
+  #    - mongodb
+  #   links:
+  #    - mongodb
 
   mongodb:
     build: ./mongodb
     container_name: "mongodb"
     ports:
      - "27017:27017"
-
-  gateway-microservice:
-    build: ./gateway-microservice
-    ports:
-     - "8000:8000"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-
-  cart-microservice:
-    build: ./cart-microservice
-    ports:
-     - "9002:9002"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - redis
-
-  product-catalog-microservice:
-    build: ./product-catalog-microservice
-    ports:
-     - "9001:9001"
-     - "4444:4444"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - mongodb
-    links:
-     - mongodb
   
   product-services:
     build: ./product-services
+    environment:
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - TOPIC_NAME=product-topic
     ports:
      - "9007:9007"
      - "4447:4447"
     depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
+    #  - discovery-microservice
+    #  - configuration-microservice
+    #  - gateway-microservice
      - mongodb
     links:
      - mongodb
+
+  product-search-service:
+    build: ./product-search-service
+    environment:
+      - SERVER_PORT=9008
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - TOPIC_NAME=product-topic
+    ports:
+      - 9008:9008
+      - 4448:4448
+    depends_on:
+      # - discovery-microservice
+      # - configuration-microservice
+      # - gateway-microservice
+      - elasticsearch
+      - kafka
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
@@ -85,13 +106,19 @@ services:
       - 9200:9200
       - 9300:9300
 
-  product-search-service:
-    build: ./product-search-service
+  zookeeper:
+    image: wurstmeister/zookeeper
     ports:
-      - 9008:9008
-      - 4448:4448
-    depends_on:
-      - discovery-microservice
-      - configuration-microservice
-      - gateway-microservice
-      - elasticsearch
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_CREATE_TOPICS: "product-topic:3:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  
